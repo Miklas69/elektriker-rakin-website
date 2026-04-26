@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Angebote & Pakete – Elektrotechnik Rakin OHG</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Design-System (identisch mit index.html) ── */
+    :root {
+      --bg:        #0D1117;
+      --surface:   #161B22;
+      --surface-2: #1C2128;
+      --primary:   #F97316;
+      --primary-dark: #EA6C0A;
+      --copper:    #B45309;
+      --text:      #F1F5F9;
+      --muted:     #8B949E;
+      --muted-light: #94A3B8;
+      --danger:    #EF4444;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-bebas { font-family: 'Bebas Neue', sans-serif; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+    /* ── Navbar ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      background: rgba(13,17,23,0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo img { height: 36px; width: auto; object-fit: contain; }
+    .nav-logo span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.12em;
+      color: var(--text);
+    }
+
+    .nav-back {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.8rem; font-weight: 600;
+      color: var(--muted-light);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--primary); }
+    .nav-back svg { width: 16px; height: 16px; }
+
+    /* ── Gradient text ── */
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--copper) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Fade-up animation ── */
+    .fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .fade-up.show { opacity: 1; transform: none; }
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+
+    /* ── Section helpers ── */
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(249,115,22,0.15), transparent);
+      margin: 0;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(249,115,22,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Pricing Cards ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .pkg-card {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .pkg-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(249,115,22,0.25);
+      box-shadow: 0 20px 60px rgba(249,115,22,0.08);
+    }
+
+    .pkg-card.featured {
+      border-color: rgba(249,115,22,0.4);
+      background: linear-gradient(145deg, #1a2030 0%, var(--surface) 100%);
+    }
+
+    .pkg-card.featured::before {
+      content: 'EMPFOHLEN';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      padding: 4px 16px;
+      border-radius: 100px;
+    }
+
+    .pkg-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(249,115,22,0.12);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .pkg-name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .pkg-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .pkg-price {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .pkg-price span { font-size: 1rem; font-weight: 400; color: var(--muted-light); }
+
+    .pkg-desc {
+      font-size: 0.875rem;
+      color: var(--muted-light);
+      line-height: 1.6;
+      margin: 16px 0 24px;
+    }
+
+    .pkg-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 32px;
+      flex: 1;
+    }
+
+    .pkg-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: var(--muted-light);
+    }
+
+    .pkg-features li .check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(249,115,22,0.12);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 14px 24px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(249,115,22,0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 13px 24px;
+      border-radius: 12px;
+      border: 1px solid rgba(249,115,22,0.35);
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(249,115,22,0.06);
+      border-color: var(--primary);
+    }
+
+    /* ── Success Fee Hinweis ── */
+    .success-hint {
+      max-width: 680px;
+      margin: 48px auto 0;
+      padding: 0 24px;
+      background: rgba(249,115,22,0.05);
+      border: 1px solid rgba(249,115,22,0.15);
+      border-radius: 16px;
+      padding: 20px 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .success-hint svg { flex-shrink: 0; color: var(--primary); margin-top: 2px; }
+
+    /* ── Roadmap Timeline ── */
+    .timeline {
+      position: relative;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: calc(24px + 28px);
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--primary), rgba(249,115,22,0.1));
+    }
+
+    @media (min-width: 640px) {
+      .timeline::before { left: 28px; }
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .timeline-dot {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid rgba(249,115,22,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-dot.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      box-shadow: 0 0 0 6px rgba(249,115,22,0.12);
+    }
+
+    .timeline-dot.future {
+      border-style: dashed;
+      opacity: 0.6;
+    }
+
+    .timeline-body {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 20px 24px;
+      flex: 1;
+      transition: border-color 0.3s;
+    }
+
+    .timeline-body:hover { border-color: rgba(249,115,22,0.2); }
+
+    .timeline-phase {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .timeline-desc {
+      font-size: 0.85rem;
+      color: var(--muted-light);
+      line-height: 1.6;
+    }
+
+    .timeline-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 3px 10px;
+    }
+
+    .tag.orange {
+      color: var(--primary);
+      background: rgba(249,115,22,0.08);
+      border-color: rgba(249,115,22,0.2);
+    }
+
+    /* ── Umfrage CTA ── */
+    .survey-box {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .survey-inner {
+      background: linear-gradient(135deg, var(--surface) 0%, #1a2030 100%);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 20px;
+      padding: 40px 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    @media (min-width: 640px) {
+      .survey-inner { flex-direction: row; align-items: center; }
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    footer p { font-size: 0.8rem; color: var(--muted); }
+
+    /* ── Container ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .timeline::before { left: calc(24px + 28px); }
+      .pkg-price { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<header>
+  <a href="index.html" class="nav-logo">
+    <img src="Bilder/Logo.png" alt="Elektrotechnik Rakin Logo" />
+    <span>RAKIN OHG</span>
+  </a>
+  <a href="index.html" class="nav-back">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+    </svg>
+    Zurück zur Website
+  </a>
+</header>
+
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <p class="section-label fade-up">Angebote & Pakete</p>
+  <h1 class="font-bebas gradient-text fade-up delay-1"
+      style="font-size: clamp(3rem, 9vw, 6rem); letter-spacing: 0.08em; line-height: 1; margin-bottom: 16px;">
+    IHRE NEUE WEBSITE
+  </h1>
+  <p class="fade-up delay-2"
+     style="font-size: 1.1rem; color: var(--muted-light); max-width: 520px; line-height: 1.7; text-align: center;">
+    Von der fertigen Mockup-Umsetzung bis zur langfristigen digitalen Partnerschaft – wählen Sie das Paket, das zu Ihnen passt.
+  </p>
+</section>
+
+
+<!-- ── Pricing ── -->
+<section style="padding: 0 0 80px;">
+
+  <div class="pricing-grid">
+
+    <!-- Paket 1: Starter -->
+    <div class="pkg-card fade-up">
+      <div class="pkg-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <p class="pkg-name">Starter</p>
+      <p class="pkg-title">Live-Paket</p>
+      <p class="pkg-price">500 – 800 €<span> einmalig</span></p>
+      <p class="pkg-desc">
+        Das Mockup wird finalisiert und live geschaltet. Schneller Einstieg – sofort online, professionell präsent.
+      </p>
+      <ul class="pkg-features">
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Bestehende Mockup-Seite fertiggestellt
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Funktionierendes Kontaktformular (E-Mail-Weiterleitung)
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Domain-Verknüpfung & Hosting-Setup
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Impressum & Datenschutz (Vorlage)
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Mobile-optimiert & SSL-gesichert
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Lieferzeit: 1–2 Wochen
+        </li>
+      </ul>
+      <a href="tel:+491609162876" class="btn-outline">Paket anfragen</a>
+    </div>
+
+    <!-- Paket 2: Professional (FEATURED) -->
+    <div class="pkg-card featured fade-up delay-1">
+      <div class="pkg-icon" style="background: rgba(249,115,22,0.2);">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/>
+        </svg>
+      </div>
+      <p class="pkg-name">Professional</p>
+      <p class="pkg-title">Maßgeschneidert</p>
+      <p class="pkg-price">1.200 – 1.500 €<span> einmalig</span></p>
+      <p style="font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-bottom: 8px;">+ optional 49 €/Monat Wartung</p>
+      <p class="pkg-desc">
+        Die vollständig individualisierte Version – mit Ihren eigenen Fotos, Texten und optimiert für maximale Sichtbarkeit in Regensburg.
+      </p>
+      <ul class="pkg-features">
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Alles aus dem Live-Paket
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Professionelle Fotos & kurze Imagevideos eingebaut
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          SEO-Optimierung (Google-Rankings Regensburg)
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Google Business Profil Integration
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Personalisierte Texte & Inhalte
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Lieferzeit: 3–5 Wochen
+        </li>
+      </ul>
+      <a href="tel:+491609162876" class="btn-primary">Paket anfragen</a>
+    </div>
+
+    <!-- Paket 3: Partner -->
+    <div class="pkg-card fade-up delay-2">
+      <div class="pkg-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/>
+        </svg>
+      </div>
+      <p class="pkg-name">Partner</p>
+      <p class="pkg-title">Wachstum</p>
+      <p class="pkg-price">99 €<span> / Monat</span></p>
+      <p style="font-size: 0.8rem; color: var(--muted); font-weight: 500; margin-bottom: 8px;">nach einmaliger Einrichtung</p>
+      <p class="pkg-desc">
+        Langfristige digitale Partnerschaft – wir kümmern uns um alles, Sie konzentrieren sich auf Ihre Arbeit.
+      </p>
+      <ul class="pkg-features">
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Alles aus Maßgeschneidert
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Hosting, Updates & technische Wartung inklusive
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Monatliches Reporting (Besucher, Anfragen)
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Google Analytics & Conversion-Tracking
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Zugang zu KI-Automatisierungen (Phase 4)
+        </li>
+        <li>
+          <span class="check">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+          </span>
+          Direkter Ansprechpartner, kurze Reaktionszeiten
+        </li>
+      </ul>
+      <a href="tel:+491609162876" class="btn-outline">Paket anfragen</a>
+    </div>
+
+  </div>
+
+  <!-- Erfolgsbasierter Hinweis -->
+  <div class="success-hint fade-up" style="max-width: 1052px; margin: 40px auto 0; padding: 20px 28px;">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="color: var(--primary); flex-shrink:0; margin-top:2px;">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/>
+    </svg>
+    <div>
+      <p style="font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 4px;">Individuelle Modelle möglich</p>
+      <p style="font-size: 0.82rem; color: var(--muted-light); line-height: 1.6;">
+        Auf Wunsch sind auch ergebnisbasierte Modelle denkbar – zum Beispiel anteilige Beteiligung an nachweislich generierten Aufträgen. Sprechen Sie uns einfach an.
+      </p>
+    </div>
+  </div>
+
+</section>
+
+
+<div class="divider"></div>
+
+
+<!-- ── Roadmap ── -->
+<section style="padding: 80px 0;">
+  <div class="container" style="margin-bottom: 48px;">
+    <div class="fade-up">
+      <p class="section-label">So läuft es ab</p>
+      <h2 class="font-bebas" style="font-size: clamp(2.2rem, 5vw, 3.5rem); letter-spacing: 0.08em; color: var(--text);">
+        ROADMAP ZUR PREMIUM-WEBSITE
+      </h2>
+      <p style="font-size: 0.9rem; color: var(--muted-light); margin-top: 12px; max-width: 480px; line-height: 1.7;">
+        Ein klarer Weg von der ersten Online-Präsenz bis zur vollautomatisierten digitalen Kundengewinnung.
+      </p>
+    </div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- Phase 1 -->
+    <div class="timeline-item fade-up">
+      <div class="timeline-dot active">01</div>
+      <div class="timeline-body">
+        <p class="timeline-phase">Phase 1 · 1–2 Wochen</p>
+        <p class="timeline-title">MOCKUP LIVE SCHALTEN</p>
+        <p class="timeline-desc">
+          Das bestehende Mockup wird finalisiert, mit Domain verbunden und live geschaltet. Kontaktformular funktioniert, Impressum ist gesetzt. Sofort sichtbar bei Google.
+        </p>
+        <div class="timeline-tags">
+          <span class="tag orange">Live-Paket</span>
+          <span class="tag">Hosting</span>
+          <span class="tag">Domain</span>
+          <span class="tag">Formular</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="timeline-item fade-up delay-1">
+      <div class="timeline-dot">02</div>
+      <div class="timeline-body">
+        <p class="timeline-phase">Phase 2 · 3–5 Wochen</p>
+        <p class="timeline-title">INDIVIDUALISIERUNG & FOTOS</p>
+        <p class="timeline-desc">
+          Professionelle Fotos und kurze Videos des Teams und der Projekte werden eingebaut. Alle Texte werden auf Ihr Unternehmen zugeschnitten. SEO-Optimierung für "Elektriker Regensburg" und Umgebung.
+        </p>
+        <div class="timeline-tags">
+          <span class="tag orange">Professional-Paket</span>
+          <span class="tag">Fotoshooting</span>
+          <span class="tag">SEO</span>
+          <span class="tag">Google Business</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="timeline-item fade-up delay-2">
+      <div class="timeline-dot">03</div>
+      <div class="timeline-body">
+        <p class="timeline-phase">Phase 3 · laufend</p>
+        <p class="timeline-title">ANALYTICS & WACHSTUM</p>
+        <p class="timeline-desc">
+          Google Analytics, Conversion-Tracking und monatliches Reporting zeigen genau, wie viele Besucher und Anfragen die Website generiert. Laufende Optimierungen auf Basis echter Daten.
+        </p>
+        <div class="timeline-tags">
+          <span class="tag orange">Partner-Paket</span>
+          <span class="tag">Analytics</span>
+          <span class="tag">Reporting</span>
+          <span class="tag">Wartung</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 4 -->
+    <div class="timeline-item fade-up delay-3">
+      <div class="timeline-dot future">04</div>
+      <div class="timeline-body" style="border-color: rgba(249,115,22,0.1);">
+        <p class="timeline-phase" style="opacity: 0.7;">Phase 4 · Zukunft</p>
+        <p class="timeline-title" style="opacity: 0.8;">KI-AUTOMATISIERUNG</p>
+        <p class="timeline-desc">
+          Automatische Erstantwort auf Kundenanfragen, KI-gestützter Chatbot für häufige Fragen, automatische Angebotserstellung. Mehr Aufträge – weniger Aufwand.
+        </p>
+        <div class="timeline-tags">
+          <span class="tag">Chatbot</span>
+          <span class="tag">Auto-Reply</span>
+          <span class="tag">KI-Integration</span>
+          <span class="tag" style="color: var(--muted); border-style: dashed;">In Planung</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<div class="divider"></div>
+
+
+<!-- ── Bedarfsanalyse ── -->
+<section style="padding: 80px 0;">
+  <div class="survey-box">
+    <div class="fade-up" style="text-align: center; margin-bottom: 40px;">
+      <p class="section-label">Schritt 1</p>
+      <h2 class="font-bebas" style="font-size: clamp(2rem, 5vw, 3rem); letter-spacing: 0.08em; color: var(--text);">
+        IHRE ZIELE & WÜNSCHE
+      </h2>
+      <p style="font-size: 0.9rem; color: var(--muted-light); margin-top: 12px; line-height: 1.7;">
+        Damit wir das perfekte Paket schnüren können, würden wir gerne mehr über Elektrotechnik Rakin erfahren. Die Umfrage dauert ca. 3 Minuten.
+      </p>
+    </div>
+
+    <div class="survey-inner fade-up delay-1">
+      <div style="flex: 1;">
+        <p style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--primary); margin-bottom: 8px;">Bedarfsanalyse</p>
+        <p style="font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 8px;">Was sind Ihre Ziele für die neue Website?</p>
+        <p style="font-size: 0.85rem; color: var(--muted-light); line-height: 1.6;">
+          8 kurze Fragen zu Ihren Prioritäten, Ihrem Team und Ihren Vorstellungen – damit wir gemeinsam die beste Lösung finden.
+        </p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;">
+          <span class="tag">~3 Minuten</span>
+          <span class="tag">8 Fragen</span>
+          <span class="tag">anonym möglich</span>
+        </div>
+      </div>
+      <div style="flex-shrink: 0;">
+        <a href="#" class="btn-primary" style="min-width: 180px; display: flex; align-items: center; justify-content: center; gap: 10px;"
+           onclick="alert('Umfrage-Link wird noch eingerichtet – sprechen Sie uns im Meeting an!'); return false;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
+          </svg>
+          Zur Umfrage →
+        </a>
+        <p style="font-size: 0.72rem; color: var(--muted); text-align: center; margin-top: 8px;">Link folgt nach dem Gespräch</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── Footer ── -->
+<footer>
+  <p>© 2026 Elektrotechnik Rakin OHG · Angebote erstellt von <strong style="color: var(--text);">Miklas</strong> · Alle Angaben unverbindlich</p>
+</footer>
+
+
+<script>
+  // Fade-up on scroll
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+  // Sticky header shadow on scroll
+  const hdr = document.querySelector('header');
+  window.addEventListener('scroll', () => {
+    hdr.style.boxShadow = scrollY > 20 ? '0 4px 24px rgba(0,0,0,0.4)' : 'none';
+  }, { passive: true });
+</script>
+
+</body>
+</html>
