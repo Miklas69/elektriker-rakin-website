@@ -1,0 +1,114 @@
+name: Auto Versioning & Release
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  version-and-release:
+    name: Bump Version & Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # full history needed for tag detection
+
+      # ── 2. Get latest tag ────────────────────────────────
+      - name: Get latest version tag
+        id: latest_tag
+        run: |
+          # Find the highest semver tag; default to v0.0.0 if none exist
+          LATEST=$(git tag --list 'v*.*.*' --sort=-version:refname | head -n 1)
+          if [ -z "$LATEST" ]; then
+            LATEST="v0.0.0"
+          fi
+          echo "tag=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "Latest tag: $LATEST"
+
+      # ── 3. Determine bump type from commit message ───────
+      - name: Determine version bump
+        id: bump
+        run: |
+          MSG=$(git log -1 --pretty=%B)
+          echo "Commit message: $MSG"
+
+          if echo "$MSG" | grep -qiE "^(BREAKING|feat!|fix!|MAJOR):"; then
+            echo "bump=major" >> "$GITHUB_OUTPUT"
+          elif echo "$MSG" | grep -qiE "^(feat|feature|add|neue|hinzugefügt):"; then
+            echo "bump=minor" >> "$GITHUB_OUTPUT"
+          else
+            echo "bump=patch" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── 4. Calculate next version ────────────────────────
+      - name: Calculate next version
+        id: next_version
+        run: |
+          LATEST="${{ steps.latest_tag.outputs.tag }}"
+          BUMP="${{ steps.bump.outputs.bump }}"
+
+          # Strip leading "v"
+          VERSION="${LATEST#v}"
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
+          MINOR=$(echo "$VERSION" | cut -d. -f2)
+          PATCH=$(echo "$VERSION" | cut -d. -f3)
+
+          case "$BUMP" in
+            major) MAJOR=$((MAJOR+1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR+1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH+1)) ;;
+          esac
+
+          NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          echo "version=$NEW_TAG" >> "$GITHUB_OUTPUT"
+          echo "Next version: $NEW_TAG (bump: $BUMP)"
+
+      # ── 5. Create & push tag ─────────────────────────────
+      - name: Create git tag
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "${{ steps.next_version.outputs.version }}"
+          git push origin "${{ steps.next_version.outputs.version }}"
+
+      # ── 6. Build release notes from commit log ───────────
+      - name: Generate release notes
+        id: notes
+        run: |
+          PREV="${{ steps.latest_tag.outputs.tag }}"
+          NEW="${{ steps.next_version.outputs.version }}"
+
+          # Commits since last tag (or all if first release)
+          if git rev-parse "$PREV" >/dev/null 2>&1; then
+            LOG=$(git log "${PREV}..HEAD" --pretty="- %s (%h)" --no-merges)
+          else
+            LOG=$(git log --pretty="- %s (%h)" --no-merges)
+          fi
+
+          echo "notes<<EOF" >> "$GITHUB_OUTPUT"
+          echo "## Änderungen in $NEW" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "$LOG" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "**Dateien:** \`index.html\`" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      # ── 7. Create GitHub Release ─────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.next_version.outputs.version }}
+          name: "Release ${{ steps.next_version.outputs.version }}"
+          body: ${{ steps.notes.outputs.notes }}
+          files: index.html
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
