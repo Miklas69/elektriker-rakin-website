@@ -95,28 +95,19 @@
     .divider { height:1px; background:linear-gradient(90deg, transparent, rgba(24,149,187,.30), transparent); }
 
     /* ── Service cards with image BG ── */
+    /* Service cards – Hover Reveal */
     .svc-card {
       position: relative;
       overflow: hidden;
-      border: 1px solid rgba(24,149,187,.15);
       border-radius: 20px;
-      background: #fff;
-      transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
-    }
-    .svc-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,.00);
-      transition: background .35s ease;
-      z-index: 1;
+      min-height: 280px;
+      cursor: pointer;
+      transition: transform .4s ease, box-shadow .4s ease;
     }
     .svc-card:hover {
       transform: translateY(-6px);
-      border-color: rgba(24,149,187,.5);
-      box-shadow: 0 20px 50px rgba(24,149,187,.18), 0 0 0 1px rgba(24,149,187,.15);
+      box-shadow: 0 24px 60px rgba(0,0,0,.25);
     }
-    .svc-card:hover::before { background: rgba(0,0,0,.10); }
     .svc-card .svc-bg {
       position: absolute;
       inset: 0;
@@ -125,12 +116,47 @@
       transition: transform .5s ease;
       z-index: 0;
     }
-    .svc-card:hover .svc-bg { transform: scale(1.08); }
-    .svc-content { position: relative; z-index: 2; }
-    .svc-arrow { transition: transform .3s, color .3s; }
-    .svc-card:hover .svc-arrow { transform: translateX(5px); color: var(--primary); }
-    .svc-icon { transition: background .3s, color .3s; }
-    .svc-card:hover .svc-icon { background: rgba(24,149,187,.20); color: #1895BB; }
+    .svc-card:hover .svc-bg { transform: scale(1.06); }
+
+    /* Standard: nur Titel am unteren Rand */
+    .svc-default {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 3rem 1.75rem 1.75rem;
+      background: linear-gradient(to top, rgba(0,0,0,.75) 0%, transparent 100%);
+      z-index: 2;
+      transition: opacity .35s ease;
+    }
+    .svc-card:hover .svc-default { opacity: 0; pointer-events: none; }
+
+    /* Hover: dunkler Overlay + voller Inhalt */
+    .svc-content {
+      position: absolute;
+      inset: 0;
+      background: rgba(15,25,35,.82);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity .35s ease;
+    }
+    .svc-card:hover .svc-content { opacity: 1; }
+
+    /* Icon */
+    .svc-icon {
+      width: 3rem; height: 3rem;
+      border-radius: 0.75rem;
+      background: rgba(24,149,187,.3);
+      color: #5DD4F0;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    /* Pfeil */
+    .svc-arrow { transition: transform .3s; color: #5DD4F0; }
+    .svc-card:hover .svc-arrow { transform: translateX(5px); }
 
     /* ── Trust card ── */
     .trust-item { border-left: 3px solid var(--primary); transition: background .3s; background: #fff; border-radius: 0 8px 8px 0; }
@@ -485,15 +511,20 @@
       <!-- 1 Notdienst -->
       <div class="svc-card cursor-pointer min-h-[280px] fade-up">
         <div class="svc-bg" style="background-image:url('Bilder/notdienst.png')"></div>
-        <div class="svc-content p-7 h-full flex flex-col justify-between min-h-[280px]">
+        
+        <!-- Standard: Titel sichtbar -->
+        <div class="svc-default">
+          <h3 class="text-xl font-bold text-white">Elektriker-Notdienst</h3>
+        </div>
+        <div class="svc-content">
           <div>
-            <div class="svc-icon w-12 h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center mb-4">
+            <div class="svc-icon">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
             </div>
-            <h3 class="text-xl font-bold text-text mb-2">Elektriker-Notdienst</h3>
-            <p class="text-sm text-muted-light leading-relaxed">Stromausfall, Kurzschluss, defekte Sicherungen – 24/7 auch an Sonn- und Feiertagen.</p>
+            <h3 class="text-xl font-bold text-white mb-2">Elektriker-Notdienst</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">Stromausfall, Kurzschluss, defekte Sicherungen – 24/7 auch an Sonn- und Feiertagen.</p>
           </div>
-          <span class="svc-arrow mt-6 text-sm font-semibold text-muted-light flex items-center gap-2">
+          <span class="svc-arrow mt-4 text-sm font-semibold flex items-center gap-2">
             Mehr erfahren <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </span>
         </div>
@@ -502,15 +533,20 @@
       <!-- 2 Elektroinstallation -->
       <div class="svc-card cursor-pointer min-h-[280px] fade-up delay-1">
         <div class="svc-bg" style="background-image:url('Bilder/installation.jpg')"></div>
-        <div class="svc-content p-7 h-full flex flex-col justify-between min-h-[280px]">
+        
+        <!-- Standard: Titel sichtbar -->
+        <div class="svc-default">
+          <h3 class="text-xl font-bold text-white">Elektroinstallation</h3>
+        </div>
+        <div class="svc-content">
           <div>
-            <div class="svc-icon w-12 h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center mb-4">
+            <div class="svc-icon">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
             </div>
-            <h3 class="text-xl font-bold text-text mb-2">Elektroinstallation</h3>
-            <p class="text-sm text-muted-light leading-relaxed">Kompetente Planung und Umsetzung für Neu- und Altbau – von der Steckdose bis zur Gesamtverkabelung.</p>
+            <h3 class="text-xl font-bold text-white mb-2">Elektroinstallation</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">Kompetente Planung und Umsetzung für Neu- und Altbau – von der Steckdose bis zur Gesamtverkabelung.</p>
           </div>
-          <span class="svc-arrow mt-6 text-sm font-semibold text-muted-light flex items-center gap-2">
+          <span class="svc-arrow mt-4 text-sm font-semibold flex items-center gap-2">
             Mehr erfahren <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </span>
         </div>
@@ -519,15 +555,20 @@
       <!-- 3 Sanierung -->
       <div class="svc-card cursor-pointer min-h-[280px] fade-up delay-2">
         <div class="svc-bg" style="background-image:url('Bilder/reparatur.jpg')"></div>
-        <div class="svc-content p-7 h-full flex flex-col justify-between min-h-[280px]">
+        
+        <!-- Standard: Titel sichtbar -->
+        <div class="svc-default">
+          <h3 class="text-xl font-bold text-white">Sanierung &amp; Renovierung</h3>
+        </div>
+        <div class="svc-content">
           <div>
-            <div class="svc-icon w-12 h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center mb-4">
+            <div class="svc-icon">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z"/></svg>
             </div>
-            <h3 class="text-xl font-bold text-text mb-2">Sanierung & Renovierung</h3>
-            <p class="text-sm text-muted-light leading-relaxed">Elektrische Modernisierung bei Umbaumaßnahmen – sicher, normkonform und zukunftssicher geplant.</p>
+            <h3 class="text-xl font-bold text-white mb-2">Sanierung & Renovierung</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">Elektrische Modernisierung bei Umbaumaßnahmen – sicher, normkonform und zukunftssicher geplant.</p>
           </div>
-          <span class="svc-arrow mt-6 text-sm font-semibold text-muted-light flex items-center gap-2">
+          <span class="svc-arrow mt-4 text-sm font-semibold flex items-center gap-2">
             Mehr erfahren <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </span>
         </div>
@@ -536,15 +577,20 @@
       <!-- 4 Wallbox -->
       <div class="svc-card cursor-pointer min-h-[280px] fade-up delay-1">
         <div class="svc-bg" style="background-image:url('Bilder/wallbox.avif')"></div>
-        <div class="svc-content p-7 h-full flex flex-col justify-between min-h-[280px]">
+        
+        <!-- Standard: Titel sichtbar -->
+        <div class="svc-default">
+          <h3 class="text-xl font-bold text-white">Wallbox-Installation</h3>
+        </div>
+        <div class="svc-content">
           <div>
-            <div class="svc-icon w-12 h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center mb-4">
+            <div class="svc-icon">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M3.75 18h15A2.25 2.25 0 0021 15.75v-6a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 9.75v6A2.25 2.25 0 003.75 18zM3 12h18"/></svg>
             </div>
-            <h3 class="text-xl font-bold text-text mb-2">Wallbox-Installation</h3>
-            <p class="text-sm text-muted-light leading-relaxed">E-Ladestation für Zuhause oder Gewerbe – fachgerecht installiert, KfW-förderungsfähig.</p>
+            <h3 class="text-xl font-bold text-white mb-2">Wallbox-Installation</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">E-Ladestation für Zuhause oder Gewerbe – fachgerecht installiert, KfW-förderungsfähig.</p>
           </div>
-          <span class="svc-arrow mt-6 text-sm font-semibold text-muted-light flex items-center gap-2">
+          <span class="svc-arrow mt-4 text-sm font-semibold flex items-center gap-2">
             Mehr erfahren <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </span>
         </div>
@@ -553,15 +599,20 @@
       <!-- 5 Balkonkraftwerk -->
       <div class="svc-card cursor-pointer min-h-[280px] fade-up delay-2">
         <div class="svc-bg" style="background-image:url('Bilder/panele.avif')"></div>
-        <div class="svc-content p-7 h-full flex flex-col justify-between min-h-[280px]">
+        
+        <!-- Standard: Titel sichtbar -->
+        <div class="svc-default">
+          <h3 class="text-xl font-bold text-white">Balkonkraftwerk</h3>
+        </div>
+        <div class="svc-content">
           <div>
-            <div class="svc-icon w-12 h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center mb-4">
+            <div class="svc-icon">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
             </div>
-            <h3 class="text-xl font-bold text-text mb-2">Balkonkraftwerke</h3>
-            <p class="text-sm text-muted-light leading-relaxed">Professionelle Montage und normgerechter Anschluss Ihrer Mini-Solaranlage – sicher und schnell.</p>
+            <h3 class="text-xl font-bold text-white mb-2">Balkonkraftwerke</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">Professionelle Montage und normgerechter Anschluss Ihrer Mini-Solaranlage – sicher und schnell.</p>
           </div>
-          <span class="svc-arrow mt-6 text-sm font-semibold text-muted-light flex items-center gap-2">
+          <span class="svc-arrow mt-4 text-sm font-semibold flex items-center gap-2">
             Mehr erfahren <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </span>
         </div>
@@ -570,15 +621,20 @@
       <!-- 6 Netzwerk -->
       <div class="svc-card cursor-pointer min-h-[280px] fade-up delay-3">
         <div class="svc-bg" style="background-image:url('Bilder/ausrüstung.avif')"></div>
-        <div class="svc-content p-7 h-full flex flex-col justify-between min-h-[280px]">
+        
+        <!-- Standard: Titel sichtbar -->
+        <div class="svc-default">
+          <h3 class="text-xl font-bold text-white">Netzwerktechnik</h3>
+        </div>
+        <div class="svc-content">
           <div>
-            <div class="svc-icon w-12 h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center mb-4">
+            <div class="svc-icon">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z"/></svg>
             </div>
-            <h3 class="text-xl font-bold text-text mb-2">Netzwerktechnik</h3>
-            <p class="text-sm text-muted-light leading-relaxed">IT-Verkabelung für Privat und Gewerbe – strukturierte Netzwerke nach aktuellen Standards.</p>
+            <h3 class="text-xl font-bold text-white mb-2">Netzwerktechnik</h3>
+            <p class="text-sm text-gray-300 leading-relaxed">IT-Verkabelung für Privat und Gewerbe – strukturierte Netzwerke nach aktuellen Standards.</p>
           </div>
-          <span class="svc-arrow mt-6 text-sm font-semibold text-muted-light flex items-center gap-2">
+          <span class="svc-arrow mt-4 text-sm font-semibold flex items-center gap-2">
             Mehr erfahren <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </span>
         </div>
