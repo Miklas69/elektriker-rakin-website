@@ -157,6 +157,23 @@
     /* Pfeil */
     .svc-arrow { transition: transform .3s; color: #5DD4F0; }
     .svc-card:hover .svc-arrow { transform: translateX(5px); }
+    .svc-card.active  .svc-arrow { transform: translateX(5px); }
+
+    /* ── Mobile Touch: .active spiegelt :hover komplett ── */
+    .svc-card.active { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,.25); }
+    .svc-card.active .svc-bg      { transform: scale(1.06); }
+    .svc-card.active .svc-default { opacity: 0; pointer-events: none; }
+    .svc-card.active .svc-content { opacity: 1; }
+
+    /* ── Typewriter Cursor im Hero ── */
+    #hero-typed { color: #5DD4F0; }
+    #hero-typed::after {
+      content: '|';
+      display: inline-block;
+      margin-left: 2px;
+      animation: blink .75s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
 
     /* ── Trust card ── */
     .trust-item { border-left: 3px solid var(--primary); transition: background .3s; background: #fff; border-radius: 0 8px 8px 0; }
@@ -655,7 +672,7 @@
 <!-- ═══════════════════════════════════════════
      HERO
 ═══════════════════════════════════════════ -->
-<section class="hero-img min-h-screen flex flex-col justify-center pt-20 pb-16 relative overflow-hidden">
+<section id="hero-section" class="hero-img min-h-screen flex flex-col justify-center pt-20 pb-16 relative overflow-hidden">
 
   <!-- Orange accent lines -->
   <div class="absolute inset-0 overflow-hidden pointer-events-none">
@@ -681,7 +698,7 @@
       </h1>
 
       <p class="font-bebas tracking-widest text-muted-light mb-8 fade-up delay-2" style="font-size:clamp(1.5rem,4vw,2.5rem)">
-        SCHNELL &middot; ZUVERLÄSSIG &middot; LIZENZIERT
+        SCHNELL &middot; ZUVERLÄSSIG &middot; <span id="hero-typed">LIZENZIERT</span>
       </p>
 
       <p class="text-base sm:text-lg text-muted-light leading-relaxed max-w-xl mb-10 fade-up delay-3">
@@ -2260,6 +2277,62 @@ document.addEventListener('keydown', e => {
 window.addEventListener('load', function() {
   setTimeout(function() { document.body.classList.add('loaded'); }, 60);
 });
+
+// ── L6 Advanced: Typewriter auf Hero-Tagline ──
+(function() {
+  var el = document.getElementById('hero-typed');
+  if (!el) return;
+  var words = ['LIZENZIERT', 'ERFAHREN', '24/7 VOR ORT', 'IHR PARTNER', 'FAIR & KOMPETENT'];
+  var wi = 0, ci = 0, del = false;
+  function tick() {
+    var w = words[wi];
+    if (!del) {
+      ci++;
+      el.textContent = w.slice(0, ci);
+      if (ci === w.length) { del = true; setTimeout(tick, 2200); return; }
+      setTimeout(tick, 110);
+    } else {
+      ci--;
+      el.textContent = w.slice(0, ci);
+      if (ci === 0) { del = false; wi = (wi + 1) % words.length; }
+      setTimeout(tick, 55);
+    }
+  }
+  setTimeout(tick, 1800);
+})();
+
+// ── L6 Advanced: Hero-Parallax (Desktop only) ──
+(function() {
+  var hero = document.getElementById('hero-section');
+  if (!hero) return;
+  function onScroll() {
+    if (window.innerWidth < 768) return;
+    var offset = window.scrollY;
+    hero.style.backgroundPositionY = 'calc(40% + ' + (offset * 0.22) + 'px)';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+
+// ── L6 Advanced: Mobile Touch für Service-Cards ──
+(function() {
+  var cards = document.querySelectorAll('.svc-card');
+  cards.forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      // Wenn Modal-Button geklickt: nicht togglen
+      if (e.target.closest('button[onclick]') || e.target.closest('a')) return;
+      var isActive = card.classList.contains('active');
+      // Alle anderen schließen
+      cards.forEach(function(c) { c.classList.remove('active'); });
+      if (!isActive) card.classList.add('active');
+    });
+  });
+  // Klick außerhalb → alle schließen
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.svc-card')) {
+      cards.forEach(function(c) { c.classList.remove('active'); });
+    }
+  });
+})();
 </script>
 
 </body>
