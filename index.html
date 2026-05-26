@@ -520,9 +520,76 @@
 
     /* Scrollbar */
     ::-webkit-scrollbar-thumb { background: #1895BB !important; }
+
+    /* ── L6: Scroll-Fortschrittsleiste ── */
+    #scroll-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #1895BB, #5DD4F0);
+      width: 0%;
+      z-index: 9999;
+      transition: width .08s linear;
+      pointer-events: none;
+    }
+
+    /* ── L6: Page-Load Fade-in ── */
+    body { opacity: 0 !important; transition: opacity .45s ease !important; }
+    body.loaded { opacity: 1 !important; }
+
+    /* ── L6: Hero-Headline Shimmer ── */
+    .hero-shimmer {
+      background: linear-gradient(100deg, #1895BB 0%, #5DD4F0 38%, #1E3E4F 55%, #1895BB 100%);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 5s ease infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 100% 50%; }
+      100% { background-position:   0% 50%; }
+    }
+
+    /* ── L6: Marquee / Scroll-Ticker ── */
+    .marquee-strip {
+      background: #1E3E4F;
+      overflow: hidden;
+      padding: 14px 0;
+      position: relative;
+      white-space: nowrap;
+    }
+    .marquee-inner {
+      display: inline-block;
+      animation: marquee 35s linear infinite;
+    }
+    .marquee-inner:hover { animation-play-state: paused; }
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 32px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: .15em;
+      color: rgba(255,255,255,.75);
+    }
+    .marquee-dot {
+      display: inline-block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #1895BB;
+      flex-shrink: 0;
+    }
 </style>
 </head>
 <body>
+
+<div id="scroll-bar"></div>
 
 <!-- ═══════════════════════════════════════════
      HEADER
@@ -610,7 +677,7 @@
       <!-- Headline -->
       <h1 class="font-bebas leading-[0.9] tracking-widest mb-5 fade-up delay-1" style="font-size:clamp(3.5rem,10vw,7.5rem)">
         REGENSBURGS<br>
-        <span class="gradient-text">ELEKTRIKER</span>
+        <span class="gradient-text hero-shimmer">ELEKTRIKER</span>
       </h1>
 
       <p class="font-bebas tracking-widest text-muted-light mb-8 fade-up delay-2" style="font-size:clamp(1.5rem,4vw,2.5rem)">
@@ -723,6 +790,28 @@
   </div>
 </section>
 
+
+<!-- ═══════════════════════════════════════════
+     MARQUEE TICKER
+═══════════════════════════════════════════ -->
+<div class="marquee-strip">
+  <div class="marquee-inner" aria-hidden="true">
+    <span class="marquee-item"><span class="marquee-dot"></span>NOTDIENST 24/7</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>WALLBOX-INSTALLATION</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>ZÄHLERSCHRANK &amp; UNTERVERTEILER</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>REGENSBURG &amp; UMGEBUNG</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>LIZENZIERTER FACHBETRIEB</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>100+ PROJEKTE</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>SCHNELL · ZUVERLÄSSIG · LIZENZIERT</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>NOTDIENST 24/7</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>WALLBOX-INSTALLATION</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>ZÄHLERSCHRANK &amp; UNTERVERTEILER</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>REGENSBURG &amp; UMGEBUNG</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>LIZENZIERTER FACHBETRIEB</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>100+ PROJEKTE</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>SCHNELL · ZUVERLÄSSIG · LIZENZIERT</span>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════
      LEISTUNGEN
@@ -2154,6 +2243,22 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && sozialesModal.classList.contains('open')) {
     closeSozialesModal();
   }
+});
+
+// ── L6: Scroll-Fortschrittsleiste ──
+(function() {
+  const bar = document.getElementById('scroll-bar');
+  if (!bar) return;
+  window.addEventListener('scroll', function() {
+    const scrolled = window.scrollY;
+    const total = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+  }, { passive: true });
+})();
+
+// ── L6: Page-Load Fade-in ──
+window.addEventListener('load', function() {
+  setTimeout(function() { document.body.classList.add('loaded'); }, 60);
 });
 </script>
 
