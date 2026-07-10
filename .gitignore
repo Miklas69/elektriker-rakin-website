@@ -11,3 +11,5 @@ docs/
 .firecrawl/
 *.pyc
 __pycache__/
+
+.vercel

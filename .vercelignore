@@ -1,0 +1,30 @@
+# Interne Geschäftsunterlagen — enthalten IBAN/Steuernummer
+rakin-angebot/
+Pitch/
+Anforderungen/
+Unternehmen/
+docs/
+.claude/
+.firecrawl/
+
+# Backend läuft auf Vercel nicht (statisch) und würde als Klartext ausgeliefert
+kontakt.php
+
+# Build-/Werkzeugdateien — die Seiten sind reines HTML mit Inline-CSS
+node_modules/
+package.json
+package-lock.json
+tailwind.config.js
+tailwindcss.exe
+tailwind.min.css
+input.css
+style.css
+*.py
+
+# Entwürfe / nicht ausgelieferte Inhalte
+mockup/
+index_mockup.html
+Rezensionen.txt
+
+# 7,4 MB Quell-PNG, nur die .webp-Varianten werden verwendet
+Bilder/Elektriker_Hero_Gemini.png
