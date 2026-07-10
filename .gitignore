@@ -1,2 +1,13 @@
 node_modules/
 tailwindcss.exe
+
+# Interne Geschäftsunterlagen — enthalten IBAN/Steuernummer, NIEMALS pushen
+rakin-angebot/
+Pitch/
+Anforderungen/
+Unternehmen/
+docs/
+.claude/
+.firecrawl/
+*.pyc
+__pycache__/
