@@ -621,6 +621,82 @@
       background: #1895BB;
       flex-shrink: 0;
     }
+
+    /* ── Mobile Hero (≤640px) ─────────────────────────── */
+    @media (max-width: 640px) {
+
+      /* Ein-Screen-Hero, iOS-stabil.
+         padding-bottom haelt die Telefonkarten frei vom WhatsApp-Button
+         (fixed, bottom 1.75rem, 3.5rem hoch). */
+      #hero-section {
+        min-height: 100svh !important;
+        padding-top: 4.5rem !important;
+        padding-bottom: 6rem !important;
+        justify-content: flex-end !important;
+      }
+
+      /* Portrait-Bild + kräftigeres Overlay für Lesbarkeit */
+      .hero-img {
+        background-image:
+          linear-gradient(to bottom,
+            rgba(10,20,26,.45) 0%,
+            rgba(10,20,26,.28) 28%,
+            rgba(10,20,26,.72) 62%,
+            rgba(10,20,26,.90) 100%),
+          url('Bilder/hero_mobil.webp') !important;
+        background-position: center top !important;
+      }
+
+      /* Scroll-Hinweis raus: kollidiert mit den Telefonkarten */
+      #hero-section .animate-bounce { display: none !important; }
+
+      /* Headline: kleiner + engeres Tracking (Bebas läuft sonst über) */
+      #hero-section h1 {
+        font-size: clamp(2.6rem, 13vw, 3.4rem) !important;
+        letter-spacing: .06em !important;
+      }
+      /* Verlauf aufhellen: das dunkle Verlaufsende (#1E3E4F) verliert
+         auf dem staerkeren Mobile-Overlay den Kontrast. */
+      #hero-section .gradient-text {
+        background-image: linear-gradient(135deg, #7FE0F5, #1895BB) !important;
+      }
+      #hero-section h1 + p {
+        font-size: 1.15rem !important;
+        margin-bottom: 1.25rem !important;
+      }
+
+      /* Beschreibungs-Absatz: kompakt */
+      #hero-section .max-w-xl {
+        font-size: .9rem !important;
+        line-height: 1.5 !important;
+        margin-bottom: 1.5rem !important;
+      }
+
+      /* CTAs: gestapelt, volle Breite */
+      #hero-section .flex.flex-wrap.gap-4 {
+        flex-direction: column !important;
+        gap: .65rem !important;
+        margin-bottom: 1.5rem !important;
+      }
+      #hero-section .flex.flex-wrap.gap-4 > a {
+        width: 100% !important;
+        justify-content: center !important;
+        padding-top: .95rem !important;
+        padding-bottom: .95rem !important;
+      }
+
+      /* Telefonkarten: Slim-Liste */
+      #hero-section .grid.sm\:grid-cols-3 {
+        gap: .5rem !important;
+        margin-bottom: 0 !important;
+      }
+      #hero-section .grid.sm\:grid-cols-3 > a { padding: .5rem .75rem !important; }
+      #hero-section .grid.sm\:grid-cols-3 .w-9 { width: 1.75rem !important; height: 1.75rem !important; }
+
+      /* Trust-Pills + Blur-Orbs: weg */
+      #hero-section .fade-up.delay-4 { display: none !important; }
+      #hero-section .blur-\[120px\], #hero-section .blur-\[100px\] { display: none !important; }
+    }
 </style>
 </head>
 <body>
