@@ -626,6 +626,14 @@
     /* ── Mobile Hero (≤640px) ─────────────────────────── */
     @media (max-width: 640px) {
 
+      /* Stats-Labels: "Kundenzufriedenheit" (langes Einzelwort) passte
+         mit px-6 + tracking-widest nicht in die 2-Spalten-Zelle.
+         :has() reduziert das Padding (universell unterstützt seit 2023);
+         overflow-wrap ist der Fallback, falls :has() mal fehlt → Umbruch
+         statt Abschneiden. */
+      .counter-num + div { letter-spacing: .02em !important; font-size: .66rem !important; overflow-wrap: anywhere; }
+      .text-center:has(.counter-num) { padding-left: .5rem !important; padding-right: .5rem !important; }
+
       /* Ein-Screen-Hero, iOS-stabil.
          padding-bottom haelt die Telefonkarten frei vom WhatsApp-Button
          (fixed, bottom 1.75rem, 3.5rem hoch). */
