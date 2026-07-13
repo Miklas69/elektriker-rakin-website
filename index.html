@@ -482,12 +482,15 @@
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 4px 20px rgba(37,211,102,.4);
       z-index: 999;
-      transition: transform .2s, box-shadow .2s;
+      transition: transform .2s, box-shadow .2s, opacity .2s;
     }
     .wa-btn:hover {
       transform: scale(1.1);
       box-shadow: 0 6px 28px rgba(37,211,102,.55);
     }
+    /* FAB ausblenden solange ein Modal offen ist – verhindert Ghost-Click
+       durch das schließende Overlay auf den WhatsApp-Button (Touch-Geräte). */
+    body.modal-open .wa-btn { opacity: 0; pointer-events: none; }
     .wa-btn svg { width: 1.875rem; height: 1.875rem; }
     .wa-tooltip {
       position: absolute; right: 4.25rem; top: 50%;
@@ -2084,11 +2087,14 @@ function openModal(id) {
   }
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
+  document.body.classList.add('modal-open');
 }
 
 function closeModal() {
   modal.classList.remove('open');
   document.body.style.overflow = '';
+  // FAB erst nach dem Ghost-Click-Fenster (~300ms) wieder aktivieren
+  setTimeout(function() { document.body.classList.remove('modal-open'); }, 400);
 }
 
 document.querySelectorAll('[data-modal]').forEach(el => {
@@ -2279,11 +2285,13 @@ const sozialesModal = document.getElementById('soziales-modal');
 function openSozialesModal() {
   sozialesModal.classList.add('open');
   document.body.style.overflow = 'hidden';
+  document.body.classList.add('modal-open');
 }
 
 function closeSozialesModal() {
   sozialesModal.classList.remove('open');
   document.body.style.overflow = '';
+  setTimeout(function() { document.body.classList.remove('modal-open'); }, 400);
 }
 
 // Klick auf Overlay-Hintergrund schließt Modal
