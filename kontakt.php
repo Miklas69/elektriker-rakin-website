@@ -87,7 +87,7 @@ $sent = mail($to, $subject, $body, $headers);
 
 if (!$sent) {
     http_response_code(500);
-    exit(json_encode(['ok' => false, 'error' => 'Versand fehlgeschlagen. Bitte rufen Sie uns an: 0160 91628756']));
+    exit(json_encode(['ok' => false, 'error' => 'Versand fehlgeschlagen. Bitte rufen Sie uns an: 0160 9162 8756']));
 }
 
 echo json_encode(['ok' => true]);
