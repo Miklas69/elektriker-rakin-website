@@ -282,20 +282,13 @@
       transform: translateY(-1px) scale(1.02);
     }
 
-    /* ── Review carousel ── */
-    .review-track-wrap { overflow: hidden; }
+    /* ── Review carousel (JS-Autoscroll, Endlos, Touch übernimmt) ── */
+    .review-track-wrap { overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+    .review-track-wrap::-webkit-scrollbar { display: none; }
     .review-track {
       display: flex;
       gap: 24px;
       width: max-content;
-      animation: reviewScroll 60s linear infinite;
-    }
-    .review-track:hover { animation-play-state: paused; }
-    @keyframes reviewScroll {
-      0%    { transform: translateX(0); }
-      95%   { transform: translateX(-50%); }
-      95.1% { transform: translateX(0); }
-      100%  { transform: translateX(0); }
     }
     .review-card { flex: 0 0 340px; }
 
@@ -1721,55 +1714,6 @@
         </div>
       </div>
 
-      <!-- ── Duplikat-Block für nahtloses Loop (Karten 1–7 wiederholt) ── -->
-      <div class="review-card bg-surface rounded-2xl p-6 border border-white/[.06]">
-        <div class="flex gap-0.5 mb-3"><span class="star text-sm">★★★★★</span></div>
-        <p class="text-muted-light text-sm leading-relaxed mb-4">"Wir hatten einen größeren Auftrag in unserer Firma von Elektrotechnik Rakin durchführen lassen und sind wirklich begeistert! Vom Erstkontakt bis zur Fertigstellung war alles professionell."</p>
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary/40 to-copper flex items-center justify-center font-bold text-xs text-white flex-shrink-0">TL</div>
-          <div><div class="text-sm font-semibold text-text">Tobias Lukianczuk</div><div class="text-xs text-muted-light">vor 2 Monaten · Google</div></div>
-        </div>
-      </div>
-      <div class="review-card bg-surface rounded-2xl p-6 border border-white/[.06]">
-        <div class="flex gap-0.5 mb-3"><span class="star text-sm">★★★★★</span></div>
-        <p class="text-muted-light text-sm leading-relaxed mb-4">"Wir sind absolut begeistert von diesem Elektrobetrieb! Ein echter Familienbetrieb, wie man ihn sich nur wünschen kann: zuverlässig, kompetent und mit einer hervorragenden Arbeitsqualität."</p>
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-copper to-primary/40 flex items-center justify-center font-bold text-xs text-white flex-shrink-0">KX</div>
-          <div><div class="text-sm font-semibold text-text">Kris X</div><div class="text-xs text-muted-light">vor 3 Monaten · Google</div></div>
-        </div>
-      </div>
-      <div class="review-card bg-surface rounded-2xl p-6 border border-white/[.06]">
-        <div class="flex gap-0.5 mb-3"><span class="star text-sm">★★★★★</span></div>
-        <p class="text-muted-light text-sm leading-relaxed mb-4">"Sonntag Früh um 8 Uhr Notfall gehabt, gleich jemand erreicht, kurz darauf war Herr Rakin vor Ort, hat alles fachmännisch überprüft und behoben. Sehr zu empfehlen!"</p>
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary/40 to-copper flex items-center justify-center font-bold text-xs text-white flex-shrink-0">DL</div>
-          <div><div class="text-sm font-semibold text-text">DL</div><div class="text-xs text-muted-light">vor 4 Monaten · Google</div></div>
-        </div>
-      </div>
-      <div class="review-card bg-surface rounded-2xl p-6 border border-white/[.06]">
-        <div class="flex gap-0.5 mb-3"><span class="star text-sm">★★★★★</span></div>
-        <p class="text-muted-light text-sm leading-relaxed mb-4">"Am Samstag hatten wir einen Notfall mit dem Strom in unserer Wohnung. Über das Internet und aufgrund der sehr guten Bewertungen haben wir Elektrotechnik Rakin kontaktiert – absolute Empfehlung!"</p>
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-copper to-primary/40 flex items-center justify-center font-bold text-xs text-white flex-shrink-0">DS</div>
-          <div><div class="text-sm font-semibold text-text">Diana Schillallis</div><div class="text-xs text-muted-light">vor einem Monat · Google</div></div>
-        </div>
-      </div>
-      <div class="review-card bg-surface rounded-2xl p-6 border border-white/[.06]">
-        <div class="flex gap-0.5 mb-3"><span class="star text-sm">★★★★★</span></div>
-        <p class="text-muted-light text-sm leading-relaxed mb-4">"Absolut empfehlenswert! Wir hatten am Wochenende ein Problem. Uns wurde in kürzester Zeit geholfen. Sehr freundlich und kompetent! Vielen Dank hierfür!"</p>
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary/40 to-copper flex items-center justify-center font-bold text-xs text-white flex-shrink-0">AH</div>
-          <div><div class="text-sm font-semibold text-text">Ali Hanoglu</div><div class="text-xs text-muted-light">vor einem Monat · Google</div></div>
-        </div>
-      </div>
-      <div class="review-card bg-surface rounded-2xl p-6 border border-white/[.06]">
-        <div class="flex gap-0.5 mb-3"><span class="star text-sm">★★★★★</span></div>
-        <p class="text-muted-light text-sm leading-relaxed mb-4">"Danke für die Arbeit! Komme selbst aus dem Handwerk und muss wirklich sagen, dass hier sauber und fachmännisch gearbeitet wurde. Fragen wurden sofort geklärt und man wurde sehr gut beraten."</p>
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-copper to-primary/40 flex items-center justify-center font-bold text-xs text-white flex-shrink-0">PJ</div>
-          <div><div class="text-sm font-semibold text-text">Pascal Juen</div><div class="text-xs text-muted-light">vor 4 Monaten · Google</div></div>
-        </div>
-      </div>
 
     </div>
   </div>
@@ -2416,6 +2360,30 @@ window.addEventListener('load', function() {
     }
   });
 })();
+
+// ── Review-Karussell: Auto-Scroll + Endlos + Touch-Stopp ──
+window.addEventListener('load', function() {
+  var wrap = document.querySelector('.review-track-wrap');
+  var track = document.querySelector('.review-track');
+  if (!wrap || !track) return;
+  var half = track.scrollWidth;              // Breite der 22 Original-Karten
+  track.innerHTML += track.innerHTML;        // exakte Verdopplung für nahtlosen Loop
+  var running = true, userTouched = false;
+  var SPEED = 0.35;                          // px/Frame ≈ 21 px/s (halb so schnell wie zuvor)
+  function step() {
+    if (running && !userTouched) {
+      wrap.scrollLeft += SPEED;
+      if (wrap.scrollLeft >= half) wrap.scrollLeft -= half;
+    }
+    requestAnimationFrame(step);
+  }
+  // Desktop: Hover pausiert, danach weiter
+  wrap.addEventListener('mouseenter', function() { running = false; });
+  wrap.addEventListener('mouseleave', function() { running = true; });
+  // Touch: erster Kontakt stoppt Auto-Scroll dauerhaft, Nutzer swiped selbst
+  wrap.addEventListener('touchstart', function() { userTouched = true; }, { passive: true });
+  requestAnimationFrame(step);
+});
 </script>
 
 </body>
