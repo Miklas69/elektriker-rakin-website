@@ -1825,14 +1825,15 @@
           </div>
         </div>
 
-        <!-- Karte: statische Adressanzeige, kein automatischer Google-Aufruf (DSGVO) -->
-        <div class="rounded-2xl overflow-hidden border border-white/[.06] relative" style="height:180px">
-          <div id="map-fallback" class="absolute inset-0 bg-surface-2 flex items-center justify-center flex-col gap-2">
-            <svg class="w-10 h-10 text-primary/40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/></svg>
-            <p class="text-xs text-muted text-center px-4">Heckstegstraße 25<br>93055 Regensburg</p>
-            <a href="https://maps.google.com/?q=Heckstegstraße+25+93055+Regensburg" target="_blank" rel="noopener" class="text-xs text-primary hover:underline">In Google Maps öffnen →</a>
+        <!-- Karte: DSGVO-konforme 2-Klick-Lösung – Google-iframe lädt erst nach Klick -->
+        <div id="map-consent" class="rounded-2xl overflow-hidden border border-white/[.06] relative" style="height:180px;cursor:pointer" role="button" tabindex="0" aria-label="Google Maps laden">
+          <img src="Bilder/karte_vorschau.webp" alt="Karte: Heckstegstraße 25, 93055 Regensburg" style="width:100%;height:100%;object-fit:cover">
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center px-4" style="background:rgba(26,43,53,.55)">
+            <span class="btn-primary" style="padding:.55rem 1.1rem;font-size:.8rem">Karte laden</span>
+            <span style="font-size:.68rem;color:rgba(255,255,255,.85);max-width:260px">Beim Laden werden Daten an Google übertragen – siehe <a href="datenschutz.html" target="_blank" rel="noopener" style="text-decoration:underline;color:#fff">Datenschutzerklärung</a>.</span>
           </div>
         </div>
+        <a href="https://maps.google.com/?q=Heckstegstraße+25+93055+Regensburg" target="_blank" rel="noopener" class="text-xs text-primary hover:underline mt-2 inline-block">In Google Maps öffnen →</a>
 
       </div>
     </div>
@@ -2384,6 +2385,25 @@ window.addEventListener('load', function() {
   wrap.addEventListener('touchstart', function() { userTouched = true; }, { passive: true });
   requestAnimationFrame(step);
 });
+
+// ── Google Maps: 2-Klick-Consent (iframe erst nach Klick laden) ──
+(function() {
+  var box = document.getElementById('map-consent');
+  if (!box) return;
+  function load() {
+    var f = document.createElement('iframe');
+    f.src = 'https://www.google.com/maps?q=Heckstegstra%C3%9Fe+25,+93055+Regensburg&output=embed';
+    f.style.cssText = 'width:100%;height:100%;border:0;display:block';
+    f.setAttribute('loading', 'lazy');
+    f.setAttribute('title', 'Google Maps – Standort Elektrotechnik Rakin');
+    box.innerHTML = '';
+    box.appendChild(f);
+    box.style.cursor = 'default';
+    box.removeAttribute('role');
+  }
+  box.addEventListener('click', load);
+  box.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); load(); } });
+})();
 </script>
 
 </body>
