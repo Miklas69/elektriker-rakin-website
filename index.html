@@ -691,10 +691,20 @@
       #hero-section .gradient-text {
         background-image: linear-gradient(135deg, #7FE0F5, #1895BB) !important;
       }
+      /* Tagline: einzeilig auf jedem Gerät. 4.35vw ist so bemessen, dass der
+         längste Typewriter-Fall "SCHNELL · ZUVERLÄSSIG · FAIR & KOMPETENT"
+         bei 320px-Displays noch ohne Umbruch passt. */
       #hero-section h1 + p {
-        font-size: 1.15rem !important;
+        font-size: 4.35vw !important;
+        letter-spacing: .04em !important;
+        white-space: nowrap !important;
         margin-bottom: 1.25rem !important;
       }
+
+      /* FAQ-Preistabelle: kompakt, damit alle 3 Spalten aufs Handy passen.
+         Spalte 1 darf umbrechen (Container ist bei 320px nur ~240px breit). */
+      .faq-price { font-size: .7rem !important; }
+      .faq-price th, .faq-price td { padding: 5px 6px !important; }
 
       /* Beschreibungs-Absatz: kompakt */
       #hero-section .max-w-xl {
@@ -1916,7 +1926,7 @@
       <div>
         <p class="text-xs font-bold text-text uppercase tracking-widest mb-4">Kontakt</p>
         <ul class="space-y-2 text-sm text-muted-light mb-6">
-          <li><a href="tel:+4916091628756" class="hover:text-primary transition-colors font-semibold text-text">0160 9162 8756</a></li>
+          <li><a href="tel:+4916091628756" class="hover:text-primary transition-colors">0160 9162 8756</a></li>
           <li>Heckstegstraße 25<br>93055 Regensburg</li>
         </ul>
         <a href="impressum.html" class="block text-xs font-bold text-text uppercase tracking-widest mb-3 hover:text-primary transition-colors">Impressum</a>
