@@ -1788,16 +1788,16 @@
             <div class="grid sm:grid-cols-2 gap-5">
               <div>
                 <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Name *</label>
-                <input type="text" placeholder="Max Mustermann" required class="form-field w-full rounded-xl px-4 py-3 text-sm" />
+                <input type="text" name="name" placeholder="Max Mustermann" required class="form-field w-full rounded-xl px-4 py-3 text-sm" />
               </div>
               <div>
                 <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Telefon *</label>
-                <input type="tel" placeholder="0941 12345" required class="form-field w-full rounded-xl px-4 py-3 text-sm" />
+                <input type="tel" name="phone" placeholder="0941 12345" required class="form-field w-full rounded-xl px-4 py-3 text-sm" />
               </div>
             </div>
             <div>
               <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Leistung</label>
-              <select class="form-field w-full rounded-xl px-4 py-3 text-sm cursor-pointer">
+              <select name="leistung" class="form-field w-full rounded-xl px-4 py-3 text-sm cursor-pointer">
                 <option value="">Bitte wählen...</option>
                 <option>Elektriker-Notdienst 24/7</option>
                 <option>Elektroinstallation</option>
@@ -1810,10 +1810,10 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Nachricht</label>
-              <textarea rows="4" placeholder="Beschreiben Sie kurz Ihr Anliegen..." class="form-field w-full rounded-xl px-4 py-3 text-sm resize-none"></textarea>
+              <textarea rows="4" name="message" placeholder="Beschreiben Sie kurz Ihr Anliegen..." class="form-field w-full rounded-xl px-4 py-3 text-sm resize-none"></textarea>
             </div>
             <label class="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" required class="mt-1 w-4 h-4 flex-shrink-0 accent-[#1895BB] cursor-pointer" />
+              <input type="checkbox" name="consent" required class="mt-1 w-4 h-4 flex-shrink-0 accent-[#1895BB] cursor-pointer" />
               <span class="text-xs text-muted-light leading-relaxed">
                 Ich habe die <a href="datenschutz.html" target="_blank" rel="noopener" class="text-primary underline hover:no-underline">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage zu. *
               </span>
@@ -2004,12 +2004,30 @@
   });
 
   // ── Form ──
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const ok = document.getElementById('form-ok');
-    ok.classList.remove('hidden');
-    e.target.reset();
-    setTimeout(() => ok.classList.add('hidden'), 5000);
+    // Vorschau-Umgebungen (Vercel/localhost) haben kein PHP: Demo-Modus.
+    const demo = /vercel\.app$|^localhost$|^127\./.test(location.hostname);
+    if (demo) {
+      ok.classList.remove('hidden');
+      e.target.reset();
+      setTimeout(() => ok.classList.add('hidden'), 5000);
+      return;
+    }
+    try {
+      const res = await fetch('kontakt.php', { method: 'POST', body: new FormData(e.target) });
+      const data = await res.json();
+      if (data.ok) {
+        ok.classList.remove('hidden');
+        e.target.reset();
+        setTimeout(() => ok.classList.add('hidden'), 8000);
+      } else {
+        alert(data.error || 'Senden fehlgeschlagen. Bitte rufen Sie uns an: 0160 9162 8756');
+      }
+    } catch (err) {
+      alert('Senden fehlgeschlagen. Bitte rufen Sie uns an: 0160 9162 8756');
+    }
   }
 
 </script>
